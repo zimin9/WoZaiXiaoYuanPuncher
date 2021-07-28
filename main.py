@@ -11,14 +11,14 @@ def getData(type):
 
 def readDataFromJson():
     json = Reader(json_path)
-    return json.getJson(config.getJsonFileName())
+    return json.getJson()
 
 
 if __name__ == '__main__':
     # 填入配置文件所在路径
-    config_path = "/usr/WoZaiXiaoYuan/config.ini"
+    config_path = "C:\\Users\\xxxx\\Desktop\\WoZaiXiaoYuanPuncher\\config.ini"
     # 填入json文件所在路径
-    json_path = "/usr/WoZaiXiaoYuan/source.json"
+    json_path = "C:\\Users\\xxxx\\Desktop\\WoZaiXiaoYuanPuncher\\source.json"
     config = ConfigReader(config_path)
     data = getData(config.getDataSourceType())
     for item in data:
