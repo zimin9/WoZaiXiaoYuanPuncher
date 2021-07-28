@@ -24,14 +24,14 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
 
 开始使用之前，需要配置账号信息、与所使用的数据源（目前仅能从json文件读取数据，后期会加上数据库）
 
-在 `config.ini` 中配置程序，如下
+在 `main.py` 中配置相关路径（请填写绝对路径），如下
 
-```ini
-[BasicConfig]
-# 数据源格式，目前仅支持json，后期会加上数据库
-dataSourceType = json
-# json文件的名称，可自定义。json文件切记放在根目录
-jsonFileName = source.json
+```
+if __name__ == '__main__':
+    # 填入配置文件所在路径
+    config_path = "/usr/WoZaiXiaoYuan/config.ini"
+    # 填入json文件所在路径
+    json_path = "/usr/WoZaiXiaoYuan/source.json"
 ```
 
 json文件中填写账号的信息，包括账号的用户名、密码、打卡相关的数据（如位置、体温等）
