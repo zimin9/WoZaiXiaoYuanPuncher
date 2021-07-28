@@ -1,6 +1,6 @@
 # 📲 我在校园打卡程序（新版）
 
-关于登录密码错误的问题，请看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)
+**关于登录密码错误的问题，请看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)**
 
 新版本我在校园取消了原来的token鉴权机制，改为JWSESSION与cookie进行鉴权。
 
@@ -36,7 +36,7 @@ jsonFileName = source.json
 
 json文件中填写账号的信息，包括账号的用户名、密码、打卡相关的数据（如位置、体温等）
 
-格式如下
+可以配置多个账户进行打卡，格式如下
 
 ```json
 [
