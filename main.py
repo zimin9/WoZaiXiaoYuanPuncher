@@ -10,12 +10,16 @@ def getData(type):
 
 
 def readDataFromJson():
-    json = Reader()
+    json = Reader(json_path)
     return json.getJson(config.getJsonFileName())
 
 
 if __name__ == '__main__':
-    config = ConfigReader()
+    # 填入配置文件所在路径
+    config_path = "/usr/WoZaiXiaoYuan/config.ini"
+    # 填入json文件所在路径
+    json_path = "/usr/WoZaiXiaoYuan/source.json"
+    config = ConfigReader(config_path)
     data = getData(config.getDataSourceType())
     for item in data:
         wzxy = WoZaiXiaoYuanPuncher(item)

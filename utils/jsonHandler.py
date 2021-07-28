@@ -5,11 +5,10 @@ from .configHandler import ConfigReader
 
 
 class Reader:
-    def __init__(self):
-        self.path = os.path.dirname(os.path.realpath('__file__'))
-        print(self.path)
+    def __init__(self,path):
+        self.path = path
 
     def getJson(self, filename):
-        with open(self.path + "/" + filename, 'r', encoding='utf8')as fp:
+        with open(self.path)as fp:
             json_data = json.load(fp)
             return json_data
