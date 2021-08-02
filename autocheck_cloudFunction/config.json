@@ -1,0 +1,25 @@
+[
+  {
+    "wozaixiaoyaun_data":{
+      "username": "你自己的账号（一般是手机号码）",
+      "password": "你自己设置的密码",
+      "temperature": "36.0",
+      "latitude": "23.0922820000",
+      "longitude": "113.3541850000",
+      "country": "中国",
+      "city": "广州市",
+      "district": "海珠区",
+      "province": "广东省",
+      "township": "官洲街道",
+      "street": "赤沙西约大街",
+      "myArea": "",
+      "areacode": "",
+      "userId": ""
+    },
+    "miao_data":{
+      "isEnable": false,
+      "notifytoken" : "喵提醒提供的喵码",
+      "notifyUser" : "张三"
+    }
+  }
+]
