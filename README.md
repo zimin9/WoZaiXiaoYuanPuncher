@@ -99,7 +99,12 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 
 参考文章：[GitHub Action自动完成华工疫情打卡、网站自动签到 ｜ csdn](https://blog.csdn.net/police_1/article/details/106837694)
 
+### 💻 云函数打卡
+[使用说明](https://github.com/zimin9/WoZaiXiaoYuanPuncher/blob/main/autocheck_cloudFunction/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.md)
 
+## 🚀 贡献者(Contributors)
+
+✨ 感谢 [Chorer](https://github.com/Chorer) 贡献 云函数与消息提醒代码
 
 ## 📆 相关计划
 
@@ -107,7 +112,13 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 
 - [ ] 根据地址自动获取经纬度的功能（使用各大地图软件的api）
 - [ ] 从数据库中读取数据（mysql、mongodb 等）
-- [ ] 加入通知功能，若打卡失败，可通过钉钉机器人或诸如“喵提醒”的微信公众号发送消息
+- [x] 加入通知功能，若打卡失败，可通过钉钉机器人或诸如“喵提醒”的微信公众号发送消息
 - [ ] 编写前后端界面，将添加、删除账号等操作可视化，同时可以方便查看打卡记录
 - [ ] 制作Docker镜像，方便快速部署
 
+## 📢 声明
+1. 本项目仅供编程学习/个人使用，请遵守Apache-2.0 License开源项目授权协议。
+2. 请在国家法律法规和校方相关原则下使用。
+3. 不对任何下载者和使用者的任何行为负责。
+4. 无任何后门，也不获取、存储任何信息。 
+5. 建议尽量自己部署，不要将自己的账号信息交予他人代办。
