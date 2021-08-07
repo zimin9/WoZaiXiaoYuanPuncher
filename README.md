@@ -104,6 +104,7 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 ## 🚀 贡献者(Contributors)
 
 ✨ 感谢 [Chorer](https://github.com/Chorer) 贡献 云函数与消息提醒代码
+✨ 感谢 [jimlee2002](https://github.com/jimlee2002) 贡献 Github Action版代码与健康打卡功能
 
 ## 📆 相关计划
 
