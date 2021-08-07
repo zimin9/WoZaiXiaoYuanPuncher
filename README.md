@@ -96,8 +96,7 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 使用系统的“定时任务设置”即可，可视化配置非常简单，参考文章：[window下设置定时任务及基本配置 ｜ cnblog](https://www.cnblogs.com/funnyzpc/p/11746439.html)
 
 ### 💻 Github Action
-
-参考文章：[GitHub Action自动完成华工疫情打卡、网站自动签到 ｜ csdn](https://blog.csdn.net/police_1/article/details/106837694)
+[jimlee2002/WoZaiXiaoYuanPuncher-Actions](https://github.com/jimlee2002/WoZaiXiaoYuanPuncher-Actions)
 
 ### 💻 云函数打卡
 [使用说明](https://github.com/zimin9/WoZaiXiaoYuanPuncher/blob/main/autocheck_cloudFunction/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.md)
