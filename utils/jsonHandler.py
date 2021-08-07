@@ -1,10 +1,7 @@
 import json
-import os
-import configparser
-from .configHandler import ConfigReader
 
 
-class Reader:
+class JsonReader:
     def __init__(self,path):
         self.path = path
 

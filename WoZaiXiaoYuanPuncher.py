@@ -1,5 +1,4 @@
 # -*- encoding:utf-8 -*-
-import time
 import requests
 import json
 from urllib.parse import urlencode
@@ -24,11 +23,12 @@ class WoZaiXiaoYuanPuncher:
         }
         # 请求体（必须有）
         self.body = "{}"
+        # 实例化session
+        self.session = requests.session()
 
     # 登陆
     def login(self):
         url = self.loginUrl + "?username=" + str(self.data['username']) + "&password=" + str(self.data['password'])
-        self.session = requests.session()
         # 登陆
         response = self.session.post(url=url, data=self.body, headers=self.header)
         res = json.loads(response.text)
@@ -45,6 +45,31 @@ class WoZaiXiaoYuanPuncher:
     def setJwsession(self, jwsession):
         self.header['JWSESSION'] = jwsession
 
+    # 获取JWSESSION
+    def getJwsession(self):
+        return self.header['JWSESSION']
+
+    # 获取当前状态
+    def getStatus(self):
+        return self.status
+
+    # 测试登陆状态，若未登录或jwsession失效，请求返回code=-10
+    def testLoginStatus(self):
+        # 用任意需要鉴权的接口即可，这里随便选了一个
+        url = "https://student.wozaixiaoyuan.com/heat/getTodayHeatList.json"
+        self.header['Host'] = "student.wozaixiaoyuan.com"
+        response = self.session.post(url=url, data=self.body, headers=self.header)
+        res = json.loads(response.text)
+        if res['code'] == 0:
+            # 已登陆
+            return 1
+        elif res['code'] == -10:
+            # 未登录或jwsession失效
+            return 0
+        else:
+            # 其他错误，打卡中止
+            return -1
+
     # 获取打卡列表，判断当前打卡时间段与打卡情况，符合条件则自动进行打卡
     def PunchIn(self):
         url = "https://student.wozaixiaoyuan.com/heat/getTodayHeatList.json"
@@ -52,14 +77,21 @@ class WoZaiXiaoYuanPuncher:
         response = self.session.post(url=url, data=self.body, headers=self.header)
         res = json.loads(response.text)
         # 遍历每个打卡时段（不同学校的打卡时段数量可能不一样）
-        for i in res['data']:
-            # 判断时段是否有效
-            if int(i['state']) == 1:
-                # 判断是否已经打卡
-                if int(i['type']) == 0:
-                    self.doPunchIn(str(i['seq']))
-                elif int(i['type']) == 1:
-                    print("已经打过卡了")
+        print(res) # test
+        if res['code'] == 0:
+            self.status = True
+            for i in res['data']:
+                # 判断时段是否有效
+                if int(i['state']) == 1:
+                    # 判断是否已经打卡
+                    if int(i['type']) == 0:
+                        self.doPunchIn(str(i['seq']))
+                    elif int(i['type']) == 1:
+                        print("已经打过卡了")
+        elif res['code'] == -10:
+            print("未登录或jwsession过期")
+        else:
+            print("未知错误")
 
     # 执行打卡
     # 参数seq ： 当前打卡的序号
@@ -91,4 +123,5 @@ class WoZaiXiaoYuanPuncher:
             print("打卡成功")
         else:
             print("打卡失败")
+
 
