@@ -4,14 +4,14 @@
 
 新版本我在校园取消了原来的token鉴权机制，改为JWSESSION与cookie进行鉴权。
 
-本程序利用我在校园的登录接口，每次打卡时进行登录，获取最新的JWSESSION用于打卡。因此，本程序仅需配置一次“账户与密码”即可无限期运行。
+本程序通过登录接口获取、维护有效jwsession进行打卡，理论上仅需配置一次“账户与密码”即可无限期运行。
 
-## ⚠本分支是开发分支，程序尚未完成。
+## ⚠本分支是开发分支，程序稳定性未知。
 
 #### 本次更新：
 
-1. 增加SQLite数据库，用以记录账号的jwsession，减少登陆次数（与登录有关的问题可以看ISSUE1）。jwsession失效时，程序会自动登陆并更新jwsession以完成打卡。
-2. 增加推送提醒功能【未完成】
+1. 增加轻量级数据库SQLite，在首次登陆后，记录账号的jwsession，避免频繁登陆导致账号异常/冻结（与登录有关的问题可以看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)）。当jwsession失效时，程序才会再次发起登陆、更新jwsession。
+2. 增加PushPlus、钉钉机器人推送提醒功能
 
 ## 🚩 快速开始
 
@@ -27,7 +27,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
 
 ### 🔧 配置
 
-开始使用之前，需要进行相应配置yi
+开始使用之前，需要进行相应配置
 
 Ⅰ.  在 `main.py` 中配置相关路径（请填写绝对路径），如下
 
@@ -43,10 +43,14 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
 
 可以配置多个账户进行打卡，字段名即字段含义，格式如下
 
+​	✏ 其中 `notification_type` 可指定使用的推送平台，目前支持PushPlus与钉钉机器人两种通知方式。若使	用PushPlus请填写“PushPlus”，若使用钉钉机器人请填写“DingDing”，若不使用推送提醒功能填“None”。 
+
+​	✏ `notify_token` 填写对应推送平台的token（钉钉称之为secret）
+
 ```json
 [
   {
-  "username": "138****3210",
+  "username": "135****1234",
   "password": "password",
   "temperature": "37.0",
   "latitude": "23.36576",
@@ -59,23 +63,27 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
   "street": "仑头路xx号",
   "myArea": "",
   "areacode": "",
-  "userId": ""
+  "userId": "",
+  "notification_type": "PushPlus",
+  "notify_token": ""
   },
   {
-  "username": "111****2222",
+  "username": "123****0000",
   "password": "password",
   "temperature": "37.0",
-  "latitude": "xx.36576",
-  "longitude": "xxx.74577",
+  "latitude": "23.36576",
+  "longitude": "113.74577",
   "country": "中国",
   "city": "广州市",
-  "district": "xx区",
+  "district": "海珠区",
   "province": "广东省",
   "township": "**街道",
-  "street": "xxxxx",
+  "street": "仑头路xx号",
   "myArea": "",
   "areacode": "",
-  "userId": ""
+  "userId": "",
+  "notification_type": "DingDing",
+  "notify_token": ""
   }
 ]
 ```

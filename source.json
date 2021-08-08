@@ -13,6 +13,8 @@
   "street": "仑头路xx号",
   "myArea": "",
   "areacode": "",
-  "userId": ""
+  "userId": "",
+  "notification_type": "PushPlus",
+  "notify_token": ""
   }
 ]
