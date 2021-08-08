@@ -3,7 +3,6 @@
     "wozaixiaoyaun_data":{
       "username": "",
       "password": "",
-      "jwsession": "",
       "temperature": "36.0",
       "latitude": "23.0922820000",
       "longitude": "113.3541850000",
@@ -19,7 +18,12 @@
     },
     "pushPlus_data":{
       "isEnable": false,
-      "notifytoken" : ""
+      "notifyToken" : ""
+    },
+    "leanCloud_data":{
+      "appId":"",
+      "masterKey": "",
+      "objectId": ""
     }
   }
 ]

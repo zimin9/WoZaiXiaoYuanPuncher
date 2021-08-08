@@ -3,7 +3,22 @@ import requests
 import json
 import utils
 from urllib.parse import urlencode
+import leancloud
 
+
+class _leanCloud:
+    # 初始化 leanCloud 对象
+    def __init__(self,appId,masterKey,objectId):
+        leancloud.init(appId,master_key = masterKey)
+        Jwsession = leancloud.Object.extend('Jwsession')
+        self.obj = Jwsession.query.get(objectId)                
+    # 获取 jwsession        
+    def getJwsession(self):
+        return self.obj.get('jwsession')
+    # 设置 jwsession        
+    def setJwsession(self,value):
+        self.obj.set('jwsession',value)
+        self.obj.save()
 
 class WoZaiXiaoYuanPuncher:
     def __init__(self, item):
@@ -11,6 +26,10 @@ class WoZaiXiaoYuanPuncher:
         self.data = item['wozaixiaoyaun_data']
         # pushPlus 账号数据
         self.pushPlus_data = item['pushPlus_data']
+        # leanCloud 账号数据
+        self.leanCloud_data = item['leanCloud_data']
+        # 初始化 leanCloud 对象
+        self.leanCloud_obj = _leanCloud(self.leanCloud_data['appId'],self.leanCloud_data['masterKey'],self.leanCloud_data['objectId'])
         # 学校打卡时段
         self.seqs = []
         # 打卡结果
@@ -27,46 +46,34 @@ class WoZaiXiaoYuanPuncher:
             "Accept": "application/json, text/plain, */*"
         }
         # 请求体（必须有）
-        self.body = "{}"
+        self.body = "{}"       
+        
 
-    # 登陆
+    # 登录
     def login(self):
-        # 登陆接口
+        # 登录接口
         loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
         username,password = str(self.data['username']),str(self.data['password'])
         url = f'{loginUrl}?username={username}&password={password}'        
         self.session = requests.session()
-        # 登陆
+        # 登录
         response = self.session.post(url=url, data=self.body, headers=self.header)
         res = json.loads(response.text)
         if res["code"] == 0:
             print("登录成功")
             jwsession = response.headers['JWSESSION']
-            self.setJwsession(jwsession)
+            self.leanCloud_obj.setJwsession(jwsession)
             return True
         else:
             print("登录失败，请检查账号信息")
             self.status_code = 5
             return False
 
-    # 获取JWSESSION
-    def getJwsession(self):
-        return self.data['jwsession']
-
-    # 设置JWSESSION
-    def setJwsession(self, jwsession):
-        configs = utils.processJson("config.json").read() 
-        for config in configs:
-            if config["wozaixiaoyaun_data"]["username"] == self.data["username"]:
-                config["wozaixiaoyaun_data"]["jwsession"] = jwsession
-                break
-        utils.processJson("config.json").write(configs)
-
     # 获取打卡列表，判断当前打卡时间段与打卡情况，符合条件则自动进行打卡
     def PunchIn(self):
         url = "https://student.wozaixiaoyuan.com/heat/getTodayHeatList.json"
         self.header['Host'] = "student.wozaixiaoyuan.com"
-        self.header['JWSESSION'] = self.getJwsession() 
+        self.header['JWSESSION'] = self.leanCloud_obj.getJwsession() 
         self.session = requests.session() 
         response = self.session.post(url = url, data = self.body, headers = self.header)
         res = json.loads(response.text)
@@ -176,7 +183,7 @@ class WoZaiXiaoYuanPuncher:
         # 如果开启了消息推送
         if self.pushPlus_data['isEnable'] == True:
             url = 'http://www.pushplus.plus/send'
-            notifyToken = self.pushPlus_data['notifytoken']
+            notifyToken = self.pushPlus_data['notifyToken']
             notifySeq = self.getSeq()
             notifyTime = utils.getCurrentTime()
             notifyResult = self.getResult()
@@ -201,8 +208,9 @@ def main_handler(event, context):
     # 遍历每个用户的账户数据，进行打卡  
     for config in configs:
         wzxy = WoZaiXiaoYuanPuncher(config)
+        jwsession = wzxy.leanCloud_obj.getJwsession()
         # 如果没有 jwsession，则 登录 + 打卡
-        if wzxy.getJwsession() == "":
+        if jwsession == "" or jwsession is None:
             loginStatus = wzxy.login()
             if loginStatus:
                 print("登录成功")
