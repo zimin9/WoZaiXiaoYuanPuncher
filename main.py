@@ -30,10 +30,13 @@ if __name__ == '__main__':
                     connection.execute("update jwsession set jwsession = ? where username=?",[wzxy.getJwsession(),item["username"]])
                     wzxy.PunchIn()
             else:
-                # 对于未知错误，仍然打卡，触发失败通知给用户
+                # 对于未知错误，仍然执行打卡，意图是触发失败通知给用户
                 wzxy.PunchIn()
+            # 根据结果发送通知
+            wzxy.sendNotification()
         else:
             if wzxy.login():
                 wzxy.PunchIn()
                 connection.execute("insert into jwsession values (?,?,?,?)",[item["username"],
                                    wzxy.getJwsession(),datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d-%H-%M'),1])
+                wzxy.sendNotification()
