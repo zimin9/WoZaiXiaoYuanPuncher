@@ -4,17 +4,8 @@
       "username": "",
       "password": "",
       "temperature": "36.0",
-      "latitude": "23.0922820000",
-      "longitude": "113.3541850000",
-      "country": "中国",
-      "city": "广州市",
-      "district": "海珠区",
-      "province": "广东省",
-      "township": "官洲街道",
-      "street": "赤沙西约大街",
-      "myArea": "",
-      "areacode": "",
-      "userId": ""
+      "city": "",
+      "school": ""
     },
     "pushPlus_data":{
       "isEnable": false,
@@ -22,8 +13,7 @@
     },
     "leanCloud_data":{
       "appId":"",
-      "masterKey": "",
-      "objectId": ""
+      "masterKey": ""
     }
   }
 ]

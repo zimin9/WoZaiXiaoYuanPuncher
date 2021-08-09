@@ -103,7 +103,7 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 [jimlee2002/WoZaiXiaoYuanPuncher-Actions](https://github.com/jimlee2002/WoZaiXiaoYuanPuncher-Actions)
 
 ### 💻 云函数打卡
-[使用说明](https://github.com/zimin9/WoZaiXiaoYuanPuncher/blob/main/autocheck_cloudFunction/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.md)
+[Chorer/WoZaiXiaoYuanPuncher-cloudFunction](https://github.com/Chorer/WoZaiXiaoYuanPuncher-cloudFunction)
 
 ## 🚀 贡献者(Contributors)
 
