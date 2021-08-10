@@ -1,16 +1,18 @@
-# 📲 我在校园打卡程序（新版）
+# 📲 新版我在校园打卡程序
 
 **关于登录密码错误的问题，请看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)**
 
 新版本我在校园取消了原来的token鉴权机制，改为JWSESSION与cookie进行鉴权。
 
-本程序利用我在校园的登录接口，每次打卡时进行登录，获取最新的JWSESSION用于打卡。
+本程序通过登录接口获取、维护有效jwsession进行打卡，理论上仅需配置一次“账户与密码”即可无限期运行。
 
-## 🟡 测试版本说明
 
-根据相关反馈，目前有因登陆频繁而导致账号异常/账号冻结24小时的情况发生。新版本程序中加入了轻量级数据库SQLite（文件形式的数据库，无需安装任何软件，开箱即用），可以在第一次登陆后记录下jwsession，并在每次打卡时检查、维护其有效性，避免频繁登陆。同时加入了PushPlus、钉钉机器人两种推送提醒方式，可在发生错误时通知用户。
 
-目前新版本正在测试阶段，稳定性未知，想尝鲜的可以去开发分支查看 [分支：dev](https://github.com/zimin9/WoZaiXiaoYuanPuncher/tree/dev)
+#### 本次更新：
+
+1. 增加轻量级数据库SQLite，在首次登陆后，记录账号的jwsession，避免频繁登陆导致账号异常/冻结（与登录有关的问题可以看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)）。当jwsession失效时，程序才会再次发起登陆、更新jwsession。
+2. 增加PushPlus、钉钉机器人推送提醒功能
+
 
 ## 🚩 快速开始
 
@@ -26,26 +28,30 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
 
 ### 🔧 配置
 
-开始使用之前，需要配置账号信息、与所使用的数据源（目前仅能从json文件读取数据，后期会加上数据库）
+开始使用之前，需要进行相应配置
 
-在 `main.py` 中配置相关路径（请填写绝对路径），如下
+Ⅰ.  在 `main.py` 中配置相关路径（请填写绝对路径），如下
 
+```python
+# 填写SQLite的绝对路径，使用cron定时执行脚本时不要用相对路径！（找到项目根目录下的database.sqlite文件，复制其绝对路径）
+SQLITE_DIR = "Z:\\Users\\WoZaiXiaoYuanPuncher\\database.sqlite"
+
+# 填写json文件的绝对路径
+JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
 ```
-if __name__ == '__main__':
-    # 填入配置文件所在路径
-    config_path = "/usr/WoZaiXiaoYuan/config.ini"
-    # 填入json文件所在路径
-    json_path = "/usr/WoZaiXiaoYuan/source.json"
-```
 
-json文件中填写账号的信息，包括账号的用户名、密码、打卡相关的数据（如位置、体温等）
+Ⅱ.  在json文件中填写账号的信息，包括账号的用户名(username)、密码(password)、打卡相关的数据（如位置、体温等）
 
-可以配置多个账户进行打卡，格式如下
+可以配置多个账户进行打卡，字段名即字段含义，格式如下
+
+​	✏ 其中 `notification_type` 可指定使用的推送平台，目前支持PushPlus与钉钉机器人两种通知方式。若使	用PushPlus请填写“PushPlus”，若使用钉钉机器人请填写“DingDing”，若不使用推送提醒功能填“None”。 
+
+​	✏ `notify_token` 填写对应推送平台的token（钉钉称之为secret）
 
 ```json
 [
   {
-  "username": "138****3210",
+  "username": "135****1234",
   "password": "password",
   "temperature": "37.0",
   "latitude": "23.36576",
@@ -58,28 +64,46 @@ json文件中填写账号的信息，包括账号的用户名、密码、打卡�
   "street": "仑头路xx号",
   "myArea": "",
   "areacode": "",
-  "userId": ""
+  "userId": "",
+  "notification_type": "PushPlus",
+  "notify_token": ""
   },
   {
-  "username": "111****2222",
+  "username": "123****0000",
   "password": "password",
   "temperature": "37.0",
-  "latitude": "xx.36576",
-  "longitude": "xxx.74577",
+  "latitude": "23.36576",
+  "longitude": "113.74577",
   "country": "中国",
   "city": "广州市",
-  "district": "xx区",
+  "district": "海珠区",
   "province": "广东省",
   "township": "**街道",
-  "street": "xxxxx",
+  "street": "仑头路xx号",
   "myArea": "",
   "areacode": "",
-  "userId": ""
+  "userId": "",
+  "notification_type": "DingDing",
+  "notify_token": ""
   }
 ]
 ```
 
 运行 `main.py` 即可进行打卡，自动化打卡的配置将在下文介绍
+
+Ⅲ. 若数据库表格有误，可复制下列SQL建表：
+
+```sql
+create table jwsession
+(
+    username    text not null
+        constraint jwsession_pk
+            primary key,
+    jwsession   text,
+    update_time text,
+    is_valid    integer
+);
+```
 
 
 
@@ -87,7 +111,7 @@ json文件中填写账号的信息，包括账号的用户名、密码、打卡�
 
 ### 💻 Linux系列系统
 
-使用cron定时执行，下面是每一小时执行一次打卡程序的例子：
+使用cron定时执行，下面是每小时（的第一分钟时）执行一次打卡程序的例子：
 
 ```
 1 * * * * python3 /home/xxxx/WoZaiXiaoYuanPuncher/main.py
@@ -116,14 +140,13 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 下面是本人设想的其他功能，有空将会加入到此程序中。欢迎各位同学参与本项目，一起开发，欢迎随时PR。
 
 - [ ] 根据地址自动获取经纬度的功能（使用各大地图软件的api）
-- [ ] 从数据库中读取数据（mysql、mongodb 等）
+- [x] 从数据库中读取数据
 - [x] 加入通知功能，若打卡失败，可通过钉钉机器人或诸如“喵提醒”的微信公众号发送消息
-- [ ] 编写前后端界面，将添加、删除账号等操作可视化，同时可以方便查看打卡记录
 - [ ] 制作Docker镜像，方便快速部署
 
 ## 📢 声明
 1. 本项目仅供编程学习/个人使用，请遵守Apache-2.0 License开源项目授权协议。
 2. 请在国家法律法规和校方相关原则下使用。
-3. 不对任何下载者和使用者的任何行为负责。
-4. 无任何后门，也不获取、存储任何信息。 
-5. 建议尽量自己部署，不要将自己的账号信息交予他人代办。
+3. 开发者不对任何下载者和使用者的任何行为负责。
+4. 本程序无任何后门，所有数据仅存留于使用者机器上。 
+5. 请不要轻易将自己的账号信息告诉他人。
