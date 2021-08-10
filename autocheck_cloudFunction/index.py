@@ -3,7 +3,74 @@ import requests
 import json
 import utils
 from urllib.parse import urlencode
+import leancloud
 
+
+class leanCloud:
+    # 初始化 leanCloud 对象
+    def __init__(self,appId,masterKey):
+        leancloud.init(appId,master_key = masterKey)
+        self.obj = leancloud.Query('Info').first()            
+    # 获取 jwsession        
+    def getJwsession(self):
+        return self.obj.get('jwsession')
+    # 设置 jwsession        
+    def setJwsession(self,value):
+        self.obj.set('jwsession',value)
+        self.obj.save()
+    # 判断之前是否保存过地址信息
+    def hasAddress(self):
+        if self.obj.get('hasAddress') == False or self.obj.get('hasAddress') is None:
+            return False
+        else:
+            return True    
+    # 请求地址信息
+    def requestAddress(self,city,school):
+        # 根据文字地址求经纬度
+        url1="https://restapi.amap.com/v3/geocode/geo"
+        res = utils.geoCode(url1,{
+            "city": city,
+            "address": school,   
+        })
+        location = res['geocodes'][0]['location']        
+        # 根据经纬度求具体地址
+        url2 = 'https://restapi.amap.com/v3/geocode/regeo'
+        res = utils.geoCode(url2,{
+            "location": location 
+        })
+        return res
+    # 保存地址信息        
+    def saveAddress(self,res):
+        _res = res['regeocode']['addressComponent']
+        location = _res['streetNumber']['location'].split(',')
+        self.obj.set('hasAddress',True)
+        self.obj.set('longitude',location[0])
+        self.obj.set('latitude',location[1])
+        self.obj.set('country','中国')
+        self.obj.set('province',_res['province'])
+        self.obj.set('city',_res['city'])
+        self.obj.set('district',_res['district'])
+        self.obj.set('township',_res['township'])
+        self.obj.set('street',_res['streetNumber']['street'])
+        self.obj.save()
+    
+    # 返回地址信息
+    def getAddress(self,city,school):
+        # 如果之前没有保存过地址信息，则请求并保存
+        if self.hasAddress() == False:
+            res = self.requestAddress(city,school)
+            self.saveAddress(res)
+        return {
+            "latitude": self.obj.get('latitude'),
+            "longitude":self.obj.get('longitude'),
+            "country": self.obj.get('country'),
+            "city": self.obj.get('city'),
+            "district": self.obj.get('district'),
+            "province": self.obj.get('province'),
+            "township": self.obj.get('township'),
+            "street": self.obj.get('street'),
+        }    
+        
 
 class WoZaiXiaoYuanPuncher:
     def __init__(self, item):
@@ -11,6 +78,10 @@ class WoZaiXiaoYuanPuncher:
         self.data = item['wozaixiaoyaun_data']
         # pushPlus 账号数据
         self.pushPlus_data = item['pushPlus_data']
+        # leanCloud 账号数据
+        self.leanCloud_data = item['leanCloud_data']
+        # 初始化 leanCloud 对象
+        self.leanCloud_obj = leanCloud(self.leanCloud_data['appId'],self.leanCloud_data['masterKey'])
         # 学校打卡时段
         self.seqs = []
         # 打卡结果
@@ -27,46 +98,34 @@ class WoZaiXiaoYuanPuncher:
             "Accept": "application/json, text/plain, */*"
         }
         # 请求体（必须有）
-        self.body = "{}"
+        self.body = "{}"       
+        
 
-    # 登陆
+    # 登录
     def login(self):
-        # 登陆接口
+        # 登录接口
         loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
         username,password = str(self.data['username']),str(self.data['password'])
         url = f'{loginUrl}?username={username}&password={password}'        
         self.session = requests.session()
-        # 登陆
+        # 登录
         response = self.session.post(url=url, data=self.body, headers=self.header)
         res = json.loads(response.text)
         if res["code"] == 0:
             print("登录成功")
             jwsession = response.headers['JWSESSION']
-            self.setJwsession(jwsession)
+            self.leanCloud_obj.setJwsession(jwsession)
             return True
         else:
             print("登录失败，请检查账号信息")
             self.status_code = 5
             return False
 
-    # 获取JWSESSION
-    def getJwsession(self):
-        return self.data['jwsession']
-
-    # 设置JWSESSION
-    def setJwsession(self, jwsession):
-        configs = utils.processJson("config.json").read() 
-        for config in configs:
-            if config["wozaixiaoyaun_data"]["username"] == self.data["username"]:
-                config["wozaixiaoyaun_data"]["jwsession"] = jwsession
-                break
-        utils.processJson("config.json").write(configs)
-
     # 获取打卡列表，判断当前打卡时间段与打卡情况，符合条件则自动进行打卡
     def PunchIn(self):
         url = "https://student.wozaixiaoyuan.com/heat/getTodayHeatList.json"
         self.header['Host'] = "student.wozaixiaoyuan.com"
-        self.header['JWSESSION'] = self.getJwsession() 
+        self.header['JWSESSION'] = self.leanCloud_obj.getJwsession() 
         self.session = requests.session() 
         response = self.session.post(url = url, data = self.body, headers = self.header)
         res = json.loads(response.text)
@@ -110,21 +169,15 @@ class WoZaiXiaoYuanPuncher:
         url = "https://student.wozaixiaoyuan.com/heat/save.json"
         self.header['Host'] = "student.wozaixiaoyuan.com"
         self.header['Content-Type'] = "application/x-www-form-urlencoded"
+        addressInfo = self.leanCloud_obj.getAddress(self.data['city'],self.data['school'])
         sign_data = {
             "answers": '["0"]',
             "seq": str(seq),
-            "temperature": utils.getRandomTemprature(self.data['temperature']),
-            "latitude": self.data['latitude'],
-            "longitude": self.data['longitude'],
-            "country": self.data['country'],
-            "city": self.data['city'],
-            "district": self.data['district'],
-            "province": self.data['province'],
-            "township": self.data['township'],
-            "street": self.data['street'],
-            "myArea": self.data['myArea'],
-            "areacode": self.data['areacode'],
-            "userId": self.data['userId']
+            "temperature": utils.getRandomTemprature(self.data['temperature']),        
+            "myArea": "",
+            "areacode": "",
+            "userId": "",
+            **addressInfo
         }
         data = urlencode(sign_data)
         response = self.session.post(url=url, data=data, headers=self.header)
@@ -176,7 +229,7 @@ class WoZaiXiaoYuanPuncher:
         # 如果开启了消息推送
         if self.pushPlus_data['isEnable'] == True:
             url = 'http://www.pushplus.plus/send'
-            notifyToken = self.pushPlus_data['notifytoken']
+            notifyToken = self.pushPlus_data['notifyToken']
             notifySeq = self.getSeq()
             notifyTime = utils.getCurrentTime()
             notifyResult = self.getResult()
@@ -200,9 +253,10 @@ def main_handler(event, context):
     configs = utils.processJson("config.json").read()
     # 遍历每个用户的账户数据，进行打卡  
     for config in configs:
-        wzxy = WoZaiXiaoYuanPuncher(config)
+        wzxy = WoZaiXiaoYuanPuncher(config)            
         # 如果没有 jwsession，则 登录 + 打卡
-        if wzxy.getJwsession() == "":
+        jwsession = wzxy.leanCloud_obj.getJwsession()        
+        if jwsession == "" or jwsession is None:
             loginStatus = wzxy.login()
             if loginStatus:
                 print("登录成功")

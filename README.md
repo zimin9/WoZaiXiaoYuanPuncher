@@ -6,12 +6,13 @@
 
 本程序通过登录接口获取、维护有效jwsession进行打卡，理论上仅需配置一次“账户与密码”即可无限期运行。
 
-## ⚠本分支是开发分支，程序稳定性未知。
+
 
 #### 本次更新：
 
 1. 增加轻量级数据库SQLite，在首次登陆后，记录账号的jwsession，避免频繁登陆导致账号异常/冻结（与登录有关的问题可以看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)）。当jwsession失效时，程序才会再次发起登陆、更新jwsession。
 2. 增加PushPlus、钉钉机器人推送提醒功能
+
 
 ## 🚩 快速开始
 
@@ -126,7 +127,7 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 [jimlee2002/WoZaiXiaoYuanPuncher-Actions](https://github.com/jimlee2002/WoZaiXiaoYuanPuncher-Actions)
 
 ### 💻 云函数打卡
-[使用说明](https://github.com/zimin9/WoZaiXiaoYuanPuncher/blob/main/autocheck_cloudFunction/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.md)
+[Chorer/WoZaiXiaoYuanPuncher-cloudFunction](https://github.com/Chorer/WoZaiXiaoYuanPuncher-cloudFunction)
 
 ## 🚀 贡献者(Contributors)
 
