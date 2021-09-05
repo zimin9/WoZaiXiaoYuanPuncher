@@ -1,3 +1,5 @@
+### 💡 Dev分支增加了新功能：支持手动填写jwsession，打卡时无需模拟登录（避免失败后账号冻结24小时）。但缺点是无法自维护，jwsession过期后需要手动更新
+
 # 📲 新版我在校园打卡程序
 
 **关于登录密码错误的问题，请看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)**
@@ -5,8 +7,6 @@
 新版本我在校园取消了原来的token鉴权机制，改为JWSESSION与cookie进行鉴权。
 
 本程序通过登录接口获取、维护有效jwsession进行打卡，理论上仅需配置一次“账户与密码”即可无限期运行。
-
-
 
 #### 本次更新：
 
