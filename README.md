@@ -8,10 +8,9 @@
 
 
 
-#### 本次更新：
+#### 本次更新(Dev分支)：
 
-1. 增加轻量级数据库SQLite，在首次登陆后，记录账号的jwsession，避免频繁登陆导致账号异常/冻结（与登录有关的问题可以看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)）。当jwsession失效时，程序才会再次发起登陆、更新jwsession。
-2. 增加PushPlus、钉钉机器人推送提醒功能
+1. 在source.json文件中加入jwsession字段，让脚本可以直接使用jwsession进行打卡，无需登录（避免登陆失败导致账号冻结24小时）。缺点是当jwsession过期时，需要手动抓包并更新此jwsession。
 
 
 ## 🚩 快速开始
@@ -48,6 +47,8 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
 
 ​	✏ `notify_token` 填写对应推送平台的token（钉钉称之为secret）
 
+​	✏ `jwsession` 填写抓包获取的jwsession，程序会优先使用此jwsession进行打卡而非模拟登陆方式打卡。若不想使用手动抓jwsession的方式打卡，这里填None，注意大小写。
+
 ```json
 [
   {
@@ -66,7 +67,8 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
   "areacode": "",
   "userId": "",
   "notification_type": "PushPlus",
-  "notify_token": ""
+  "notify_token": "",
+  "jwsession": "11111"
   },
   {
   "username": "123****0000",
@@ -84,7 +86,8 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
   "areacode": "",
   "userId": "",
   "notification_type": "DingDing",
-  "notify_token": ""
+  "notify_token": "", 
+  "jwsession": "11111"
   }
 ]
 ```
