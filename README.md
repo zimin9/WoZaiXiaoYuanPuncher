@@ -129,11 +129,16 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 ### 💻 云函数打卡
 [Chorer/WoZaiXiaoYuanPuncher-cloudFunction](https://github.com/Chorer/WoZaiXiaoYuanPuncher-cloudFunction)
 
+### 💻 Docker版本
+[ccqstark/WoZaiXiaoYuanPuncher-Docker](https://github.com/ccqstark/WoZaiXiaoYuanPuncher-Docker)
+
 ## 🚀 贡献者(Contributors)
 
 ✨ 感谢 [Chorer](https://github.com/Chorer) 贡献 云函数与消息提醒代码
 
 ✨ 感谢 [jimlee2002](https://github.com/jimlee2002) 贡献 Github Action版代码与健康打卡功能
+
+✨ 感谢 [ccqstark](https://github.com/ccqstark) 贡献 Docker版代码
 
 ## 📆 相关计划
 
@@ -142,7 +147,7 @@ cron的具体使用教程可以参考这篇文章：[Linux crontab 命令 ｜ �
 - [ ] 根据地址自动获取经纬度的功能（使用各大地图软件的api）
 - [x] 从数据库中读取数据
 - [x] 加入通知功能，若打卡失败，可通过钉钉机器人或诸如“喵提醒”的微信公众号发送消息
-- [ ] 制作Docker镜像，方便快速部署
+- [x] 制作Docker镜像，方便快速部署
 
 ## 📢 声明
 1. 本项目仅供编程学习/个人使用，请遵守Apache-2.0 License开源项目授权协议。
