@@ -2,7 +2,7 @@
 
 # 📲 新版我在校园打卡程序
 
-**关于登录密码错误的问题，请看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)**
+**关于登录密码错误的问题，请看[ISSUE 1](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/1)、[ISSUE 13](https://github.com/zimin9/WoZaiXiaoYuanPuncher/issues/13)**
 
 新版本我在校园取消了原来的token鉴权机制，改为JWSESSION与cookie进行鉴权。
 
