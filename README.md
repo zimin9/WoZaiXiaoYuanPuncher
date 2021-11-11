@@ -46,7 +46,9 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
 
 ​	✏ 其中 `notification_type` 可指定使用的推送平台，目前支持PushPlus与钉钉机器人两种通知方式。若使	用PushPlus请填写“PushPlus”，若使用钉钉机器人请填写“DingDing”，若不使用推送提醒功能填“None”。 
 
-​	✏ `notify_token` 填写对应推送平台的token（钉钉称之为secret）
+​	✏ `notify_token` 填写对应推送平台的token（钉钉机器人则填写secret）
+
+​	✏ `dingding_access_token` 填写钉钉机器人的access_token
 
 ```json
 [
@@ -66,7 +68,8 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
   "areacode": "",
   "userId": "",
   "notification_type": "PushPlus",
-  "notify_token": ""
+  "notify_token": "",
+  "dingding_access_token": "" 
   },
   {
   "username": "123****0000",
@@ -84,7 +87,8 @@ JSON_FILE = "Z:\\Users\\WoZaiXiaoYuanPuncher\\source.json"
   "areacode": "",
   "userId": "",
   "notification_type": "DingDing",
-  "notify_token": ""
+  "notify_token": "",
+  "dingding_access_token": ""
   }
 ]
 ```

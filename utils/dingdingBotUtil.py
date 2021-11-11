@@ -9,9 +9,11 @@ import requests
 
 
 class DingDingBot:
-    def __init__(self,secret):
+    def __init__(self,access_token,secret):
         # 秘钥
         self.secret = secret
+        # token
+        self.access_token = access_token
         self.data_dict = {
             "msgtype": "markdown",
             "markdown": {
@@ -36,7 +38,7 @@ class DingDingBot:
         return self.timestamp
 
     def getURL(self):
-        url = 'https://oapi.dingtalk.com/robot/send?access_token=9b12140215ed540da101c52dd3884b2ba647508be80a20973a1d8129cbb4a02a'
+        url = 'https://oapi.dingtalk.com/robot/send?access_token=' + str(self.access_token)
         url = url + '&timestamp=' + self.timestamp + '&sign=' + self.sign
         return url
 

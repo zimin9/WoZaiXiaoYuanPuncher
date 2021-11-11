@@ -15,6 +15,7 @@
   "areacode": "",
   "userId": "",
   "notification_type": "PushPlus",
-  "notify_token": ""
+  "notify_token": "",
+  "dingding_access_token": ""
   }
 ]
