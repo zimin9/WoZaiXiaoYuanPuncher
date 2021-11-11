@@ -151,7 +151,7 @@ class WoZaiXiaoYuanPuncher:
             if self.status_code != 1 and self.status_code != -1:
                 requests.post(url, data=msg)
         elif self.data['notification_type'] == "DingDing":
-            dingding = DingDingBot(self.data['notify_token'])
+            dingding = DingDingBot(self.data["dingding_access_token"],self.data['notify_token'])
             title = "⏰ 我在校园打卡结果通知"
             content = "## 我在校园打卡结果通知 \n" \
                       "打卡情况：{} \n \n " \
