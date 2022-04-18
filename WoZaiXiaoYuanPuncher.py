@@ -5,8 +5,6 @@ import json
 import time
 import hashlib
 sign_time = int(round(time.time() * 1000)) #13位
-content = f"XX省_{sign_time}_XX市" #注意修改
-signature = hashlib.sha256(content.encode('utf-8')).hexdigest()
 from urllib.parse import urlencode
 from utils.dingdingBotUtil import DingDingBot
 
@@ -107,6 +105,8 @@ class WoZaiXiaoYuanPuncher:
         self.header['Host'] = "student.wozaixiaoyuan.com"
         self.header['Content-Type'] = "application/x-www-form-urlencoded"
         url = "https://student.wozaixiaoyuan.com/heat/save.json"
+        content = f"{self.data['province']}_{sign_time}_{self.data['city']}"
+        signature = hashlib.sha256(content.encode('utf-8')).hexdigest() #我在校园22.4.17更新：加密方式为SHA256，格式为 province_timestamp_city
         sign_data = {
             "answers": '["0"]',
             "seq": str(seq),
@@ -122,7 +122,7 @@ class WoZaiXiaoYuanPuncher:
             "myArea": self.data['myArea'],
             "areacode": self.data['areacode'],
             "userId": self.data['userId'],
-            "city_code": "156610100",  #该code对应西安市，code可通过抓包或者参考https://www.jianshu.com/p/89a56dce79f5仅供参考
+            "city_code": self.data['city_code'],
             "timestampHeader": sign_time,
             "signatureHeader": signature
         }
