@@ -1,4 +1,6 @@
-### 💡 2022.04.17 我在校园更新，本脚本已失效。修复方法：https://www.sizau.com/a/wzxy-signature.html （感谢大佬）
+### ~~💡 2022.04.17 我在校园更新，本脚本已失效。~~ 修复方法：https://www.sizau.com/a/wzxy-signature.html （感谢大佬）-- 
+
+### 已有老哥帮忙修复代码：感谢[@dakooooo](https://github.com/dakooooo)。使用前请把WoZaiXiaoYuanPuncher.py文件中的注释看一遍，将部分变量改成自己所需的。
 
 # 📲 新版我在校园打卡程序
 
