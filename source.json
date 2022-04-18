@@ -14,6 +14,7 @@
   "myArea": "",
   "areacode": "",
   "userId": "",
+  "city_code":"15**10100",
   "notification_type": "PushPlus",
   "notify_token": "",
   "dingding_access_token": ""
